@@ -1,0 +1,48 @@
+name: Build and Push Docker Images to ACR
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository so that the workflow has access to the code.
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx (optional but recommended for better caching and multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Log in to Azure Container Registry using the secrets defined in your repo settings.
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # Build and push the ASP.NET Core (Proxima.Host) Docker image.
+      - name: Build and Push Proxima.Host Image
+        run: |
+          # Build the backend image.
+          # Note: The Dockerfile is located at host/Proxima.Host/Dockerfile.
+          # The build context is set to the "host" folder because the Dockerfile
+          # references files in the "Proxima.Host" subfolder.
+          docker build -f host/Proxima.Host/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/proxima-host:latest host
+          # Push the image to ACR.
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/proxima-host:latest
+
+      # Build and push the Angular UI (ProximaUi) Docker image.
+      - name: Build and Push ProximaUi Image
+        run: |
+          # Build the frontend image.
+          # The Dockerfile is located at ui/Dockerfile, and the build context is the "ui" folder.
+          docker build -f ui/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/proxima-ui:latest ui
+          # Push the image to ACR.
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/proxima-ui:latest
