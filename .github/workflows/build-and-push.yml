@@ -20,12 +20,12 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       # Log in to Azure Container Registry using the secrets defined in your repo settings.
-      # - name: Log in to Azure Container Registry
-      #   uses: azure/docker-login@v1
-      #   with:
-      #     login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-      #     username: ${{ secrets.ACR_USERNAME }}
-      #     password: ${{ secrets.ACR_PASSWORD }}
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
       # Build and push the ASP.NET Core (Proxima.Host) Docker image.
       - name: Build and Push Proxima.Host Image
