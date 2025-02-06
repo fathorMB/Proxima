@@ -93,13 +93,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: proxima-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"  # OR "traefik" depending on your Ingress Controller
 spec:
+  ingressClassName: traefik  # <— new field here
   rules:
     - http:
         paths:
-          # All requests to /api get forwarded to Proxima.Host
           - path: /api
             pathType: Prefix
             backend:
@@ -107,7 +105,6 @@ spec:
                 name: proxima-host-service
                 port:
                   number: 80
-          # Everything else goes to the Proxima.UI
           - path: /
             pathType: Prefix
             backend:
