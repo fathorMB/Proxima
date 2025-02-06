@@ -1,0 +1,86 @@
+#
+# Deployment for Proxima.Host
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxima-host-deployment
+  labels:
+    app: proxima-host
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: proxima-host
+  template:
+    metadata:
+      labels:
+        app: proxima-host
+    spec:
+      containers:
+      - name: proxima-host
+        image: proximadev.azurecr.io/proxima-host:latest
+        ports:
+          - containerPort: 8080
+          - containerPort: 8081
+
+---
+#
+# Service for Proxima.Host
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxima-host-service
+spec:
+  selector:
+    app: proxima-host
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80            # The port the Service exposes inside the cluster
+      targetPort: 8080    # The container's port to route to
+  type: ClusterIP
+
+---
+#
+# Deployment for the Proxima UI
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxima-ui-deployment
+  labels:
+    app: proxima-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: proxima-ui
+  template:
+    metadata:
+      labels:
+        app: proxima-ui
+    spec:
+      containers:
+      - name: proxima-ui
+        image: proximadev.azurecr.io/proxima-ui:latest
+        ports:
+          - containerPort: 80
+
+---
+#
+# Service for the Proxima UI
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxima-ui-service
+spec:
+  selector:
+    app: proxima-ui
+  ports:
+    - protocol: TCP
+      port: 80        # The Service port
+      targetPort: 80  # The container’s port (Nginx)
+  type: ClusterIP
