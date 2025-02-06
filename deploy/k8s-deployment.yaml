@@ -38,8 +38,8 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: 80            # The port the Service exposes inside the cluster
-      targetPort: 8080    # The container's port to route to
+      port: 80
+      targetPort: 8080
   type: ClusterIP
 
 ---
@@ -81,6 +81,37 @@ spec:
     app: proxima-ui
   ports:
     - protocol: TCP
-      port: 80        # The Service port
-      targetPort: 80  # The container’s port (Nginx)
+      port: 80
+      targetPort: 80
   type: ClusterIP
+
+---
+#
+# Ingress Resource (routes /api to Proxima.Host, / to Proxima.UI)
+#
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxima-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"  # OR "traefik" depending on your Ingress Controller
+spec:
+  rules:
+    - http:
+        paths:
+          # All requests to /api get forwarded to Proxima.Host
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: proxima-host-service
+                port:
+                  number: 80
+          # Everything else goes to the Proxima.UI
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: proxima-ui-service
+                port:
+                  number: 80
