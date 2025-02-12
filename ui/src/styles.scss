@@ -1,66 +1,27 @@
-// src/styles.scss
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* You can add global styles to this file, and also import other style files */
 
-:root {
-    // Color palette
-    --primary-color: #4f46e5;    // Indigo
-    --primary-dark: #4338ca;     // Darker indigo
-    --secondary-color: #6366f1;  // Light indigo
-    --accent-color: #ec4899;    // Pink
-    --text-color: #1f2937;       // Gray-800
-    --background-color: #f9fafb; // Gray-50
-    --success-color: #10b981;    // Emerald
-    --error-color: #ef4444;      // Red
-  }
-  
 
-// Global base styles
-@layer base {
-  body {
-    @apply bg-background text-text;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  h1 {
-    @apply text-4xl font-bold mb-4;
-  }
-  
-  h2 {
-    @apply text-3xl font-semibold mb-3;
-  }
-  
-  h3 {
-    @apply text-2xl font-medium mb-2;
-  }
-}
+// Global icon font
+@import "../public/fonts/feather/style.css";
 
-// Global components
-@layer components {
-    .btn-primary {
-        @apply bg-primary text-white py-2 px-6 rounded-md 
-                hover:bg-primary-dark transition-colors 
-                duration-200 focus:outline-none focus:ring-2 
-                focus:ring-primary focus:ring-offset-2;
-        }
-        
-  .card {
-    @apply bg-white rounded-lg shadow-md p-6;
-  }
 
-  .form-input {
-    @apply block w-full border border-gray-300 rounded-md shadow-sm 
-           focus:border-primary focus:ring-primary sm:text-sm;
-  }
-}
+// 3rd party plugins
+@import "highlight.js/styles/atom-one-light.css";
+@import 'ngx-owl-carousel-o/lib/styles/scss/owl.carousel';
+@import 'ngx-owl-carousel-o/lib/styles/scss/owl.theme.default';
+@import "animate.css/animate.min.css"; // used in ngx-owl-carousel-o
+@import "@ng-select/ng-select/themes/default.theme.css";
+@import "metismenujs/scss/metismenujs";
+@import "dropzone/dist/min/dropzone.min.css";
+@import "quill/dist/quill.snow.css";
+@import "@rg-software/angular-archwizard/styles/archwizard";
+@import "@siemens/ngx-datatable/index";
+@import "@siemens/ngx-datatable/themes/bootstrap";
+@import "@siemens/ngx-datatable/assets/icons";
 
-// Custom animations
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 
-.fade-in {
-  animation: fadeIn 0.3s ease-in;
-}
+// NobleUI styles for LTR layout
+@import "./styles/styles.scss";
+
+// NobleUI styles for RTL layout. Replace the above style with this CSS file to enable RTL styles
+// @import "./styles/rtl-css/styles.rtl.css";

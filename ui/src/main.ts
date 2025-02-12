@@ -1,18 +1,8 @@
+/// <reference types="@angular/localize" />
+
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
-import { tokenInterceptorProvider } from './app/interceptors/token.interceptor';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    ...appConfig.providers,
-    importProvidersFrom(HttpClientModule),
-    tokenInterceptorProvider
-  ]
-}).catch(err => console.error(err));
-
-AOS.init();
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
