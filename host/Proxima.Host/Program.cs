@@ -13,6 +13,16 @@ namespace Proxima.Host
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add CORS and define a policy that allows the Angular dev server
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularDev",
+                    policy => policy
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
+
             // Add services to the container.
             // Add EF Core with an In-Memory database
             builder.Services.AddDbContext<AuthDbContext>(options =>
@@ -46,6 +56,9 @@ namespace Proxima.Host
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            // Use CORS middleware. Make sure it’s placed before authentication/authorization if needed.
+            app.UseCors("AllowAngularDev");
 
             // Ensure the in‑memory database is created (and seed data is applied)
             using (var scope = app.Services.CreateScope())
