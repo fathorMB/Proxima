@@ -1,5 +1,5 @@
 #
-# Deployment for Proxima.Host
+# Deployment per Proxima.Host (API)
 #
 apiVersion: apps/v1
 kind: Deployment
@@ -20,13 +20,13 @@ spec:
       containers:
       - name: proxima-host
         image: proximadev.azurecr.io/proxima-host:latest
+        # Apriamo entrambe le porte (se 8081 serve davvero)
         ports:
           - containerPort: 8080
           - containerPort: 8081
-
 ---
 #
-# Service for Proxima.Host
+# Service per Proxima.Host (API)
 #
 apiVersion: v1
 kind: Service
@@ -35,16 +35,21 @@ metadata:
 spec:
   selector:
     app: proxima-host
+  # Esponiamo entrambe le porte, 80 -> 8080 e 81 -> 8081
   ports:
     - name: http
       protocol: TCP
       port: 80
       targetPort: 8080
+    - name: http-alt
+      protocol: TCP
+      port: 81
+      targetPort: 8081
   type: ClusterIP
 
 ---
 #
-# Deployment for the Proxima UI
+# Deployment per Proxima.UI (Client)
 #
 apiVersion: apps/v1
 kind: Deployment
@@ -67,10 +72,9 @@ spec:
         image: proximadev.azurecr.io/proxima-ui:latest
         ports:
           - containerPort: 80
-
 ---
 #
-# Service for the Proxima UI
+# Service per Proxima.UI (Client)
 #
 apiVersion: v1
 kind: Service
@@ -87,16 +91,20 @@ spec:
 
 ---
 #
-# Ingress Resource (routes /api to Proxima.Host, / to Proxima.UI)
+# Ingress: Instrada /api → proxima-host-service (porta 80→8080)
+#          Instrada /    → proxima-ui-service  (porta 80→80)
+# Se vuoi anche la porta 81 (8081) su un path differente, aggiungi una path separata
 #
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: proxima-ingress
 spec:
-  ingressClassName: traefik  # <— new field here
+  # Indica a Kubernetes di usare il controller di Ingress “traefik” (K3s di default)
+  ingressClassName: traefik  
   rules:
-    - http:
+    - host: proxima.local          # Dominio (o sottodominio) con cui vuoi accedere
+      http:
         paths:
           - path: /api
             pathType: Prefix
