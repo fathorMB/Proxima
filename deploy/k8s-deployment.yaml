@@ -1,5 +1,5 @@
 #
-# Deployment per Proxima.Host (API)
+# Deployment for Proxima.Host (API)
 #
 apiVersion: apps/v1
 kind: Deployment
@@ -20,13 +20,17 @@ spec:
       containers:
       - name: proxima-host
         image: moro91/proxima-host:latest
-        # Apriamo entrambe le porte (se 8081 serve davvero)
+        # Set the environment variable to configure ASP.NET Core
         env:
-        - name: ASPNETCORE_URLS
-          value: "http://+:80"
+          - name: ASPNETCORE_URLS
+            value: "http://+:80"
+        # Expose container ports (HTTP port 80; uncomment HTTPS if needed)
+        ports:
+          - containerPort: 80
+          # - containerPort: 8081   # Uncomment if HTTPS on port 8081 is used
 ---
 #
-# Service per Proxima.Host (API)
+# Service for Proxima.Host (API)
 #
 apiVersion: v1
 kind: Service
@@ -35,15 +39,18 @@ metadata:
 spec:
   selector:
     app: proxima-host
-  # Esponiamo entrambe le porte, 80 -> 8080 e 81 -> 8081
-  env:
-  - name: ASPNETCORE_URLS
-    value: "http://+:80"
+  ports:
+    - protocol: TCP
+      port: 8080       # Service port exposed inside the cluster
+      targetPort: 80   # Container port to which traffic is directed
+    # Optionally, if you need to expose an HTTPS port, add:
+    # - protocol: TCP
+    #   port: 8081
+    #   targetPort: 8081
   type: ClusterIP
-
 ---
 #
-# Deployment per Proxima.UI (Client)
+# Deployment for Proxima.UI (Client)
 #
 apiVersion: apps/v1
 kind: Deployment
@@ -64,12 +71,11 @@ spec:
       containers:
       - name: proxima-ui
         image: moro91/proxima-ui:latest
-        # Apriamo entrambe le porte (se 8081 serve davvero)
         ports:
           - containerPort: 80
 ---
 #
-# Service per Proxima.UI (Client)
+# Service for Proxima.UI (Client)
 #
 apiVersion: v1
 kind: Service
@@ -83,22 +89,21 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
-
 ---
 #
-# Ingress: Instrada /api → proxima-host-service (porta 80→8080)
-#          Instrada /    → proxima-ui-service  (porta 80→80)
-# Se vuoi anche la porta 81 (8081) su un path differente, aggiungi una path separata
+# Ingress: Routes requests to the appropriate Service.
+#   - Requests to /api are routed to proxima-host-service on port 8080.
+#   - Requests to / are routed to proxima-ui-service on port 80.
 #
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: proxima-ingress
 spec:
-  # Indica a Kubernetes di usare il controller di Ingress “traefik” (K3s di default)
+  # Use the specified ingress controller (e.g., traefik)
   ingressClassName: traefik  
   rules:
-    - host: proxima.local          # Dominio (o sottodominio) con cui vuoi accedere
+    - host: proxima.local
       http:
         paths:
           - path: /api
@@ -107,7 +112,7 @@ spec:
               service:
                 name: proxima-host-service
                 port:
-                  number: 80
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:
