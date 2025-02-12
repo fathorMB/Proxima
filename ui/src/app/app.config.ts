@@ -6,6 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { provideHighlightOptions } from 'ngx-highlightjs';
+import { HttpClientModule } from '@angular/common/http';
 
 const highlightOptions = {
   coreLibraryLoader: () => import('highlight.js/lib/core'),
@@ -21,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })), 
     provideAnimationsAsync(),
+    importProvidersFrom(HttpClientModule),
     importProvidersFrom([SweetAlert2Module.forRoot()]), // ngx-sweetalert2: https://github.com/sweetalert2/ngx-sweetalert2
     provideHighlightOptions(highlightOptions), // ngx-highlightjs: https://github.com/murhafsousli/ngx-highlightjs
   ],
