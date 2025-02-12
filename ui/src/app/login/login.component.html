@@ -1,15 +1,18 @@
-<div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg" data-aos="fade-up">
-  <h2 class="text-2xl font-bold mb-6 text-center" data-aos="fade-down">Login</h2>
+<!-- src/app/login/login.component.html -->
+<div class="max-w-md w-full card fade-in" data-aos="fade-up">
+  <h2 class="text-center" data-aos="fade-down">Login</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4" data-aos="fade-up">
     <div data-aos="fade-right">
-      <label for="username" class="block text-sm font-medium text-gray-700">Username:</label>
-      <input id="username" formControlName="username" type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+      <label for="username">Username:</label>
+      <input id="username" formControlName="username" type="text" class="form-input" />
     </div>
     <div data-aos="fade-left">
-      <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
-      <input id="password" formControlName="password" type="password" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+      <label for="password">Password:</label>
+      <input id="password" formControlName="password" type="password" class="form-input" />
     </div>
-    <div *ngIf="errorMessage" class="text-red-500 text-sm text-center" data-aos="fade-up">{{ errorMessage }}</div>
-    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" data-aos="fade-up">Login</button>
+    <div *ngIf="errorMessage" class="text-error text-sm text-center fade-in">
+      {{ errorMessage }}
+    </div>
+    <button type="submit" class="btn-primary w-full">Login</button>
   </form>
 </div>
