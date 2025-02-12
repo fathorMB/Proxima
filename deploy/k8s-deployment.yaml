@@ -18,11 +18,12 @@ spec:
         app: proxima-host
     spec:
       containers:
-      - name: proxima-ui
-        image: moro91/proxima-ui:latest
+      - name: proxima-host
+        image: moro91/proxima-host:latest
+        # Apriamo entrambe le porte (se 8081 serve davvero)
         env:
-          - name: ASPNETCORE_URLS
-            value: "http://+:80"
+        - name: ASPNETCORE_URLS
+          value: "http://+:80"
 ---
 #
 # Service per Proxima.Host (API)
@@ -35,11 +36,9 @@ spec:
   selector:
     app: proxima-host
   # Esponiamo entrambe le porte, 80 -> 8080 e 81 -> 8081
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 80
+  env:
+  - name: ASPNETCORE_URLS
+    value: "http://+:80"
   type: ClusterIP
 
 ---
@@ -65,9 +64,9 @@ spec:
       containers:
       - name: proxima-ui
         image: moro91/proxima-ui:latest
-        env:
-          - name: ASPNETCORE_URLS
-            value: "http://+:80"
+        # Apriamo entrambe le porte (se 8081 serve davvero)
+        ports:
+          - containerPort: 80
 ---
 #
 # Service per Proxima.UI (Client)
