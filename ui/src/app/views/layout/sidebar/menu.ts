@@ -2,7 +2,7 @@ import { MenuItem } from './menu.model';
 
 export const MENU: MenuItem[] = [
   {
-    label: 'Main',
+    label: 'Proxima Host',
     isTitle: true
   },
   {
@@ -11,27 +11,80 @@ export const MENU: MenuItem[] = [
     link: '/dashboard'
   },
   {
-    label: 'Authentication',
-    icon: 'unlock',
+    label: 'Registry',
+    icon: 'layers',
     subItems: [
       {
-        label: 'Login',
-        link: '/auth/login',
+        label: 'Explore',
+        link: '/registry/explore'
+      },
+      {
+        label: 'Settings',
+        link: '/registry/settings'
       }
     ]
   },
   {
-    label: 'Error',
-    icon: 'cloud-off',
+    label: 'Services',
+    icon: 'grid',
+    link: '/services'
+  },
+  {
+    label: 'Environments',
+    icon: 'server',
     subItems: [
       {
-        label: '404',
-        link: '/error/404',
+        label: 'Functions',
+        link: '/environments/functions'
       },
       {
-        label: '500',
-        link: '/error/500',
-      },
+        label: 'Secrets',
+        link: '/environments/secrets'
+      }
     ]
   },
+  {
+    label: 'Analytics',
+    icon: 'bar-chart-2',
+    link: '/analytics'
+  },
+  {
+    label: 'Logs',
+    icon: 'file-text',
+    link: '/logs'
+  },
+  {
+    label: 'Host Settings',
+    icon: 'settings',
+    link: '/settings'
+  },
+  {
+    label: 'Info',
+    icon: 'info',
+    link: '/info'
+  },
+  // {
+  //   label: 'Authentication',
+  //   icon: 'unlock',
+  //   subItems: [
+  //     {
+  //       label: 'Login',
+  //       link: '/auth/login',
+  //     }
+  //   ]
+  // },
+  // {
+  //   label: 'Error',
+  //   icon: 'cloud-off',
+  //   subItems: [
+  //     {
+  //       label: '404',
+  //       link: '/error/404',
+  //     },
+  //     {
+  //       label: '500',
+  //       link: '/error/500',
+  //     },
+  //   ]
+  // },
 ];
