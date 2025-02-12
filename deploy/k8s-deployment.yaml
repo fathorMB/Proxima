@@ -22,8 +22,7 @@ spec:
         image: proximadev.azurecr.io/proxima-host:latest
         # Apriamo entrambe le porte (se 8081 serve davvero)
         ports:
-          - containerPort: 8080
-          - containerPort: 8081
+          - containerPort: 80
 ---
 #
 # Service per Proxima.Host (API)
@@ -40,11 +39,7 @@ spec:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 8080
-    - name: http-alt
-      protocol: TCP
-      port: 81
-      targetPort: 8081
+      targetPort: 80
   type: ClusterIP
 
 ---
