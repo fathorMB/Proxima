@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: proxima-host
-        image: proximadev.azurecr.io/proxima-host:latest
+        image: moro91/proxima-host:latest
         # Apriamo entrambe le porte (se 8081 serve davvero)
         ports:
           - containerPort: 80
@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
       - name: proxima-ui
-        image: proximadev.azurecr.io/proxima-ui:latest
+        image: moro91/proxima-ui:latest
         ports:
           - containerPort: 80
 ---
