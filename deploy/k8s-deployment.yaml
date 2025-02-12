@@ -18,11 +18,11 @@ spec:
         app: proxima-host
     spec:
       containers:
-      - name: proxima-host
-        image: moro91/proxima-host:latest
-        # Apriamo entrambe le porte (se 8081 serve davvero)
-        ports:
-          - containerPort: 80
+      - name: proxima-ui
+        image: moro91/proxima-ui:latest
+        env:
+          - name: ASPNETCORE_URLS
+            value: "http://+:80"
 ---
 #
 # Service per Proxima.Host (API)
