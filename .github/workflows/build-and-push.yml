@@ -36,7 +36,7 @@ jobs:
           # references files in the "Proxima.Host" subfolder.
           docker build -f host/Proxima.Host/Dockerfile -t moro91/proxima-host:latest host
           # Push the image to ACR.
-          docker push moro91/proxima-host:latestt
+          docker push moro91/proxima-host:latest
 
       # Build and push the Angular UI (ProximaUi) Docker image.
       - name: Build and Push ProximaUi Image
