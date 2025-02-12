@@ -1,4 +1,4 @@
-name: Build and Push Docker Images to ACR
+name: Build and Push Docker Images to Docker Hub
 
 on:
   push:
@@ -10,39 +10,59 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    env:
+      # Typically you'll want to keep the username in a secret if you prefer.
+      # For public repos, it's often okay to keep it here, but best practice is to store it in secrets.
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      
+      # Names of your Docker Hub repos (without the username prefix).
+      # For example: If your Docker Hub repos are:
+      #   docker.io/moro91/proxima-host
+      #   docker.io/moro91/proxima-ui
+      # then set BACKEND_REPO_NAME=proxima-host, FRONTEND_REPO_NAME=proxima-ui.
+      BACKEND_REPO_NAME: proxima-host
+      FRONTEND_REPO_NAME: proxima-ui
+
+      # You can customize the tag (e.g., 'latest' or use GITHUB_SHA, etc.).
+      IMAGE_TAG: latest
+
     steps:
-      # Checkout the repository so that the workflow has access to the code.
+      # 1. Check out the code
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Set up Docker Buildx (optional but recommended for better caching and multi-platform builds)
+      # 2. Set up Docker Buildx (optional but recommended)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Log in to Azure Container Registry using the secrets defined in your repo settings.
-      - name: Log in to Azure Container Registry
-        uses: azure/docker-login@v1
+      # 3. Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          registry: docker.io
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # Build and push the ASP.NET Core (Proxima.Host) Docker image.
+      # 4. Build and push the ASP.NET Core (Proxima.Host) Docker image
       - name: Build and Push Proxima.Host Image
         run: |
-          # Build the backend image.
-          # Note: The Dockerfile is located at host/Proxima.Host/Dockerfile.
-          # The build context is set to the "host" folder because the Dockerfile
-          # references files in the "Proxima.Host" subfolder.
-          docker build -f host/Proxima.Host/Dockerfile -t moro91/proxima-host:latest host
-          # Push the image to ACR.
-          docker push moro91/proxima-host:latest
+          # Build the image
+          docker build \
+            -f host/Proxima.Host/Dockerfile \
+            -t docker.io/${{ env.DOCKERHUB_USERNAME }}/${{ env.BACKEND_REPO_NAME }}:${{ env.IMAGE_TAG }} \
+            host
 
-      # Build and push the Angular UI (ProximaUi) Docker image.
+          # Push the image to Docker Hub
+          docker push docker.io/${{ env.DOCKERHUB_USERNAME }}/${{ env.BACKEND_REPO_NAME }}:${{ env.IMAGE_TAG }}
+
+      # 5. Build and push the Angular UI (ProximaUi) Docker image
       - name: Build and Push ProximaUi Image
         run: |
-          # Build the frontend image.
-          # The Dockerfile is located at ui/Dockerfile, and the build context is the "ui" folder.
-          docker build -f ui/Dockerfile -t moro91/proxima-ui:latest ui
-          # Push the image to ACR.
-          docker push moro91/proxima-ui:latest
+          # Build the image
+          docker build \
+            -f ui/Dockerfile \
+            -t docker.io/${{ env.DOCKERHUB_USERNAME }}/${{ env.FRONTEND_REPO_NAME }}:${{ env.IMAGE_TAG }} \
+            ui
+
+          # Push the image to Docker Hub
+          docker push docker.io/${{ env.DOCKERHUB_USERNAME }}/${{ env.FRONTEND_REPO_NAME }}:${{ env.IMAGE_TAG }}
