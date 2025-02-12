@@ -34,15 +34,15 @@ jobs:
           # Note: The Dockerfile is located at host/Proxima.Host/Dockerfile.
           # The build context is set to the "host" folder because the Dockerfile
           # references files in the "Proxima.Host" subfolder.
-          docker build -f host/Proxima.Host/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/proxima-host:latest host
+          docker build -f host/Proxima.Host/Dockerfile -t moro91/proxima-host:latest host
           # Push the image to ACR.
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/proxima-host:latest
+          docker push moro91/proxima-host:latestt
 
       # Build and push the Angular UI (ProximaUi) Docker image.
       - name: Build and Push ProximaUi Image
         run: |
           # Build the frontend image.
           # The Dockerfile is located at ui/Dockerfile, and the build context is the "ui" folder.
-          docker build -f ui/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/proxima-ui:latest ui
+          docker build -f ui/Dockerfile -t moro91/proxima-ui:latest ui
           # Push the image to ACR.
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/proxima-ui:latest
+          docker push moro91/proxima-ui:latest
