@@ -72,9 +72,8 @@ namespace Proxima.Host
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseHttpsRedirection();
             }
-
-            app.UseHttpsRedirection();
 
             // Enable authentication and authorization middleware
             app.UseAuthentication();

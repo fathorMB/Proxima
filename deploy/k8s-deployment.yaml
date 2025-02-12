@@ -65,8 +65,9 @@ spec:
       containers:
       - name: proxima-ui
         image: moro91/proxima-ui:latest
-        ports:
-          - containerPort: 80
+        env:
+          - name: ASPNETCORE_URLS
+            value: "http://+:80"
 ---
 #
 # Service per Proxima.UI (Client)
