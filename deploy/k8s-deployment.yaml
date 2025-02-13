@@ -29,15 +29,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: proxima-host-cluster-read-nodes-binding
+  name: proxima-host-cluster-read-binding
 subjects:
   - kind: ServiceAccount
-    name: proxima-host-serviceaccount
-    namespace: default
+    name: proxima-host-serviceaccount     # your service account name
+    namespace: default                   # or whichever namespace
 roleRef:
-  kind: ClusterRole
-  name: proxima-host-cluster-read-nodes
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: proxima-host-cluster-read       # must match the .metadata.name of the ClusterRole above
 
 ---
 # 4) Deployment for Proxima.Host (API) using the new ServiceAccount
