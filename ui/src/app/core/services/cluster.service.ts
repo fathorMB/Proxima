@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { ClusterInfo } from "../../models/cluster-info.model";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
+import { Cluster } from "../../models/cluster-info.model";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class ClusterService {
 
     constructor(private http: HttpClient) {}
 
-    getClusterInfo(): Observable<ClusterInfo> {
-        return this.http.get<ClusterInfo>(this.baseUrl);
+    getClusterInfo(): Observable<Cluster> {
+        return this.http.get<Cluster>(this.baseUrl);
     }
 }

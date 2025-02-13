@@ -14,7 +14,7 @@
         <h3>Nodes</h3>
         <ul class="list-group">
           <li *ngFor="let node of clusterInfo.nodes" class="list-group-item">
-            <strong>{{ node.name }}</strong> - {{ node.status }}
+            <strong>{{ node.name }}</strong> - {{ node.labels["kubernetes.io/os"] }} {{ node.labels["kubernetes.io/arch"] }}
             <!-- Optionally, you can add a nested list for conditions -->
             <ul *ngIf="node.conditions && node.conditions.length">
               <li *ngFor="let cond of node.conditions">

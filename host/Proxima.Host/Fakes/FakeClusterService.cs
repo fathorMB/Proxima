@@ -21,8 +21,8 @@ namespace Proxima.Host.Fakes
                 Name = "node-1",
                 Labels = new Dictionary<string, string>
                 {
-                    { "role", "worker" },
-                    { "zone", "us-west" }
+                    { "kubernetes.io/os", "linux" },
+                    { "kubernetes.io/arch", "amd64" }
                 },
                 Conditions = new List<NodeCondition>
                 {
@@ -51,8 +51,8 @@ namespace Proxima.Host.Fakes
                 Name = "node-2",
                 Labels = new Dictionary<string, string>
                 {
-                    { "role", "master" },
-                    { "zone", "us-east" }
+                    { "kubernetes.io/os", "linux" },
+                    { "kubernetes.io/arch", "amd64" }
                 },
                 Conditions = new List<NodeCondition>
                 {

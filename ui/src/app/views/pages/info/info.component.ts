@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ClusterInfo } from '../../../models/cluster-info.model';
 import { CommonModule } from '@angular/common';
 import { ClusterService } from '../../../core/services/cluster.service';
+import { Cluster } from '../../../models/cluster-info.model';
 
 @Component({
   selector: 'app-info',
@@ -12,7 +12,7 @@ import { ClusterService } from '../../../core/services/cluster.service';
   styleUrls: ['./info.component.scss']
 })
 export class InfoComponent implements OnInit {
-  clusterInfo: ClusterInfo | null = null;
+  clusterInfo: Cluster | null = null;
   errorMessage: string = '';
 
   constructor(private clusterService: ClusterService) {}
