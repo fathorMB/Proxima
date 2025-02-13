@@ -8,7 +8,7 @@ RUN npm install --force
 
 # Copia il resto del codice e compila il progetto
 COPY . .
-RUN npm run build --prod
+RUN npm run build --configuration=production
 
 # Stage 2: Distribuzione con Nginx
 FROM nginx:alpine
