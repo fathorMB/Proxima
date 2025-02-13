@@ -24,7 +24,10 @@ export class InfoComponent implements OnInit {
   getClusterInfo(): void {
     this.clusterService.getClusterInfo()
       .subscribe({
-        next: (data) => this.clusterInfo = data,
+        next: (data) => { 
+          this.clusterInfo = data
+          console.log(this.clusterInfo); 
+        },
         error: (error) => {
           console.error('Error fetching cluster info:', error);
           this.errorMessage = 'Error fetching cluster info';
