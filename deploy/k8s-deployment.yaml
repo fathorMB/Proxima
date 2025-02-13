@@ -1,6 +1,39 @@
-#
-# Deployment for Proxima.Host (API)
-#
+---
+# 1) ServiceAccount for Proxima.Host
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxima-host-serviceaccount
+  namespace: default
+
+---
+# 2) ClusterRole granting read access to "nodes"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: proxima-host-cluster-read-nodes
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+
+---
+# 3) ClusterRoleBinding to bind the above ClusterRole to our ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: proxima-host-cluster-read-nodes-binding
+subjects:
+  - kind: ServiceAccount
+    name: proxima-host-serviceaccount
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: proxima-host-cluster-read-nodes
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# 4) Deployment for Proxima.Host (API) using the new ServiceAccount
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,21 +50,18 @@ spec:
       labels:
         app: proxima-host
     spec:
+      serviceAccountName: proxima-host-serviceaccount  # <-- important change
       containers:
       - name: proxima-host
         image: moro91/proxima-host:latest
-        # Set the environment variable to configure ASP.NET Core
         env:
           - name: ASPNETCORE_URLS
             value: "http://+:80"
-        # Expose container ports (HTTP port 80; uncomment HTTPS if needed)
         ports:
           - containerPort: 80
-          # - containerPort: 8081   # Uncomment if HTTPS on port 8081 is used
+
 ---
-#
-# Service for Proxima.Host (API)
-#
+# 5) Service for Proxima.Host (API)
 apiVersion: v1
 kind: Service
 metadata:
@@ -41,17 +71,12 @@ spec:
     app: proxima-host
   ports:
     - protocol: TCP
-      port: 8080       # Service port exposed inside the cluster
-      targetPort: 80   # Container port to which traffic is directed
-    # Optionally, if you need to expose an HTTPS port, add:
-    # - protocol: TCP
-    #   port: 8081
-    #   targetPort: 8081
+      port: 8080
+      targetPort: 80
   type: ClusterIP
+
 ---
-#
-# Deployment for Proxima.UI (Client)
-#
+# 6) Deployment for Proxima.UI (Client)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -73,10 +98,9 @@ spec:
         image: moro91/proxima-ui:latest
         ports:
           - containerPort: 80
+
 ---
-#
-# Service for Proxima.UI (Client)
-#
+# 7) Service for Proxima.UI (Client)
 apiVersion: v1
 kind: Service
 metadata:
@@ -89,19 +113,15 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
+
 ---
-#
-# Ingress: Routes requests to the appropriate Service.
-#   - Requests to /api are routed to proxima-host-service on port 8080.
-#   - Requests to / are routed to proxima-ui-service on port 80.
-#
+# 8) Ingress routes /api to proxima-host-service:8080 and / to proxima-ui-service:80
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: proxima-ingress
 spec:
-  # Use the specified ingress controller (e.g., traefik)
-  ingressClassName: traefik  
+  ingressClassName: traefik
   rules:
     - host: proxima.local
       http:
