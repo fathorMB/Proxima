@@ -1,0 +1,42 @@
+<div class="container my-4">
+    <h2>Cluster Information</h2>
+  
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Display Cluster Info When Loaded -->
+    <div *ngIf="clusterInfo; else loading">
+      <p><strong>Version:</strong> {{ clusterInfo.version }}</p>
+      
+      <section>
+        <h3>Nodes</h3>
+        <ul class="list-group">
+          <li *ngFor="let node of clusterInfo.nodes" class="list-group-item">
+            <strong>{{ node.name }}</strong> - {{ node.status }}
+            <!-- Optionally, you can add a nested list for conditions -->
+            <ul *ngIf="node.conditions && node.conditions.length">
+              <li *ngFor="let cond of node.conditions">
+                {{ cond.type }}: {{ cond.status }} ({{ cond.reason }} - {{ cond.message }})
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+  
+      <section class="mt-4">
+        <h3>Namespaces</h3>
+        <ul class="list-group">
+          <li *ngFor="let ns of clusterInfo.namespaces" class="list-group-item">
+            <strong>{{ ns.name }}</strong> - {{ ns.status }}
+          </li>
+        </ul>
+      </section>
+    </div>
+  
+    <ng-template #loading>
+      <p>Loading cluster info...</p>
+    </ng-template>
+  </div>
+  
