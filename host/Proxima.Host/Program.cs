@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Proxima.Host.Data;
+using Proxima.Host.Fakes;
+using Proxima.Host.Interfaces;
+using Proxima.Host.Services;
 using System.Text;
 
 namespace Proxima.Host
@@ -22,6 +25,15 @@ namespace Proxima.Host
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });
+
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddScoped<IClusterService, FakeClusterService>();
+            }
+            else
+            {
+                builder.Services.AddScoped<IClusterService, ClusterService>();
+            }
 
             // Add services to the container.
             // Add EF Core with an In-Memory database
